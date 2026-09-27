@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/layouts/main-layout/main-layout.component.css"],
-  "sourcesContent": [".custom-form {\r\n    background: linear-gradient(135deg, #ffffff, #f9fafb); /* Subtelny gradient */\r\n    border: 1px solid #e5e7eb;\r\n    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* Cień dla formularza */\r\n}"],
-  "mappings": ";AAAA,CAAA;AACI;IAAA;MAAA,MAAA;MAAA,OAAA;MAAA;AACA,UAAA,IAAA,MAAA;AACA,cAAA,IAAA,IAAA,KAAA,KAAA,CAAA,EAAA,CAAA,EAAA,CAAA,EAAA;AACJ;",
-  "names": []
-}
