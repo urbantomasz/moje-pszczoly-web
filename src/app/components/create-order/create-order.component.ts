@@ -14,7 +14,8 @@ import { Router } from '@angular/router';
 import { Bread } from '../../models/bread';
 import { Order } from '../../models/order';
 import { BreadService } from '../../services/bread.service';
-import { DateService } from '../../services/date.service';
+import { Notice, OrderDate } from '../../models/order-config';
+import { OrderConfigService } from '../../services/order-config.service';
 import { OrderService } from '../../services/order.service';
 import { OrderFormComponent } from '../order-form/order-form.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
@@ -39,7 +40,8 @@ export class CreateOrderComponent implements OnInit {
   @ViewChild(OrderFormComponent) orderForm!: OrderFormComponent; 
   
   breadTypes: Bread[] = [];  
-  availableDates: Date[] = [];
+  availableDates: OrderDate[] = [];
+  notice: Notice | null = null;
   showValidationErrors = true;
   isSubmitting = false;
   orderSubmitted = false;
@@ -47,21 +49,23 @@ export class CreateOrderComponent implements OnInit {
 
   private orderService = inject(OrderService);
   private breadService = inject(BreadService);
-  private dateService = inject(DateService);
+  private orderConfigService = inject(OrderConfigService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
   ngOnInit() {
     this.loadBreads();
-    this.loadDates();
+    this.loadConfig();
   }
-  loadDates() {
-    this.dateService.getUpcomingDates().subscribe({
-      next: (data) => {
-        this.availableDates = data;
-        this.order.orderDate = this.availableDates[0];
+
+  loadConfig() {
+    this.orderConfigService.getPublicConfig().subscribe({
+      next: (config) => {
+        this.notice = config.notice;
+        this.availableDates = config.dates;
+        this.order.orderDate = this.availableDates[0]?.date;
       },
-      error: () => alert('❌ Nie udało się pobrać listy chlebów!')
+      error: () => alert('❌ Nie udało się pobrać dostępnych terminów!')
     });
   }
 

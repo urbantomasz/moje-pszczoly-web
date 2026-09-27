@@ -2,6 +2,7 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Order } from '../../models/order';
 import { Bread } from '../../models/bread';
+import { OrderDate } from '../../models/order-config';
 import { OrderFormComponent } from '../order-form/order-form.component';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -25,7 +26,7 @@ export class OrderEditComponent  {
 
   order: Order = this.data.order;
   breadTypes: Bread[] = this.data.breads;
-  availableDates: Date[] = this.data.dates;
+  availableDates: OrderDate[] = this.data.dates.map(date => ({ date }));
 
   saveChanges() {
     if (!this.orderForm?.isFormValid()) return;

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { provideRouter } from '@angular/router';
-import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
+import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
 import { CreateOrderComponent } from './components/create-order/create-order.component';
@@ -19,7 +19,7 @@ export const routes: Routes = [
     path: 'chleb/zamowienia',
     component: OrderLayoutComponent,
     children: [
-      { path: '', component: OrderSummaryComponent, canActivate: [AuthGuard] },
+      { path: '', component: AdminPanelComponent, canActivate: [AuthGuard] },
     ],
   },
   { path: 'auth-callback', component: AuthCallbackComponent },

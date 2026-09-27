@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Bread } from '../../models/bread';
 import { Order } from '../../models/order';
 import { OrderItem } from '../../models/order-item';
+import { OrderDate } from '../../models/order-config';
 import { FormatDatePipe } from "../../pipes/format-date.pipe";
 
 @Component({
@@ -28,7 +29,7 @@ export class OrderFormComponent implements OnInit{
   }
   @Input() order!: Order;
   @Input() breadTypes: Bread[] = [];  
-  @Input() availableDates: Date[] = [];
+  @Input() availableDates: OrderDate[] = [];
   availableBreads: Bread[] = [];
   showValidationErrors = true;
 
@@ -107,7 +108,7 @@ export class OrderFormComponent implements OnInit{
     this.order = {
       customerName: '',
       phone: undefined,
-      orderDate: this.availableDates[0],
+      orderDate: this.availableDates[0]?.date,
       note: undefined,
       items: []
     };

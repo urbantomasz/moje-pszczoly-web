@@ -1,0 +1,124 @@
+<div class="bg-white max-w-screen-xl mx-auto p-6 rounded-lg shadow-md">
+
+  @if (loading) {
+    <div class="flex justify-center py-10">
+      <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    </div>
+  } @else {
+
+    <!-- 🔹 Komunikat nad formularzem -->
+    <h3 class="text-lg font-bold mb-3">⚠️ Komunikat nad formularzem</h3>
+
+    <mat-slide-toggle [(ngModel)]="noticeEnabled" name="noticeEnabled">
+      Pokazuj komunikat klientom
+    </mat-slide-toggle>
+
+    <div class="grid grid-cols-1 gap-3 mt-4">
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Nagłówek (opcjonalny)</mat-label>
+        <input matInput [(ngModel)]="noticeTitle" name="noticeTitle"
+               [maxlength]="maxTitleLength"
+               placeholder="Np. Przerwa w realizacji zamówień">
+        <mat-hint align="end">{{ noticeTitle.length }}/{{ maxTitleLength }}</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Treść</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="noticeMessage" name="noticeMessage"
+                  [maxlength]="maxMessageLength"
+                  placeholder="Np. Z powodu urlopu w przyszłym tygodniu dostawy są w innych dniach."></textarea>
+        <mat-hint align="end">{{ noticeMessage.length }}/{{ maxMessageLength }}</mat-hint>
+      </mat-form-field>
+    </div>
+
+    @if (noticeEnabled) {
+      <!-- 🔹 Podgląd dokładnie tego, co zobaczy klient -->
+      <div class="mt-2">
+        <div class="text-sm text-gray-600 mb-2">Podgląd:</div>
+        <div class="flex items-start bg-yellow-50 border-2 border-yellow-500 p-4 rounded shadow-sm">
+          <svg class="w-6 h-6 text-yellow-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L4.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            @if (noticeTitle.trim()) {
+              <p class="font-semibold text-yellow-800">{{ noticeTitle }}</p>
+            }
+            <p class="text-yellow-700">{{ noticeMessage || 'Treść komunikatu…' }}</p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <hr class="my-6 border-gray-200">
+
+    <!-- 🔹 Dni dostawy -->
+    <h3 class="text-lg font-bold mb-3">📅 Dni dostawy</h3>
+
+    <mat-slide-toggle [(ngModel)]="useCustomDates" name="useCustomDates">
+      Nadpisz automatyczne terminy własnymi
+    </mat-slide-toggle>
+
+    @if (!useCustomDates) {
+      <div class="mt-3 text-sm text-gray-600">
+        Formularz pokazuje teraz automatycznie wyliczone terminy:
+        <ul class="list-disc pl-5 mt-1">
+          @for (date of generatedDates; track date.getTime()) {
+            <li>{{ date | formatDate }}</li>
+          }
+        </ul>
+      </div>
+    } @else {
+      <div class="mt-3 text-sm text-gray-600">
+        Automatyczne terminy ({{ generatedDates.length }}) są wyłączone — klienci zobaczą wyłącznie listę poniżej.
+      </div>
+    }
+
+    <div class="mt-4 flex flex-col md:flex-row md:items-center gap-3">
+      <mat-form-field appearance="outline" class="w-full md:w-64">
+        <mat-label>Dodaj dzień dostawy</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="dateToAdd" name="dateToAdd">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-stroked-button color="primary" class="rounded-full whitespace-nowrap"
+              [disabled]="!dateToAdd" (click)="addDate()">
+        ➕ Dodaj
+      </button>
+    </div>
+
+    @if (dates.length) {
+      <div class="flex flex-col gap-3 mt-2">
+        @for (item of dates; track item.date.getTime(); let i = $index) {
+          <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-gray-100 rounded-lg shadow-sm">
+            <span class="font-semibold md:w-64 shrink-0">{{ item.date | formatDate }}</span>
+
+            <mat-form-field appearance="outline" class="w-full md:flex-1" subscriptSizing="dynamic">
+              <mat-label>Notatka pod datą (opcjonalna)</mat-label>
+              <input matInput [(ngModel)]="item.note" [name]="'note' + i"
+                     [maxlength]="maxNoteLength"
+                     placeholder="Np. odbiór osobisty w Ogrodzie Botanicznym, 12:00–15:00">
+            </mat-form-field>
+
+            <button mat-stroked-button color="warn" class="rounded-full whitespace-nowrap"
+                    (click)="removeDate(i)">
+              ❌ Usuń
+            </button>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="text-gray-500 text-sm mt-3">
+        Brak własnych dat. Dodaj co najmniej jedną, żeby móc nadpisać automatyczne terminy.
+      </div>
+    }
+
+    <div class="mt-6 flex justify-end">
+      <button mat-raised-button color="primary" class="rounded-full"
+              (click)="save()" [disabled]="saving">
+        💾 Zapisz
+      </button>
+    </div>
+  }
+</div>
